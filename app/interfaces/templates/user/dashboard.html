@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}User Dashboard - Vehicle Service Booking System{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1 class="dashboard-title">
+        <i class="fas fa-tachometer-alt"></i> User Dashboard
+    </h1>
+    <p class="dashboard-welcome">Welcome back, <strong>{{ current_user.username }}</strong>!</p>
+</div>
+
+<div class="dashboard-actions">
+    <a href="{{ url_for('user.book_service') }}" class="action-card">
+        <div class="action-icon">
+            <i class="fas fa-calendar-plus"></i>
+        </div>
+        <div class="action-content">
+            <h3>Book New Service</h3>
+            <p>Schedule a new maintenance appointment for your vehicle</p>
+        </div>
+    </a>
+    
+    <a href="{{ url_for('user.service_requests') }}" class="action-card">
+        <div class="action-icon">
+            <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="action-content">
+            <h3>View All Requests</h3>
+            <p>See all your past and current service requests</p>
+        </div>
+    </a>
+</div>
+
+<div class="card">
+    <h2 class="card-title">
+        <i class="fas fa-history"></i> Recent Service Requests
+    </h2>
+    
+    {% if service_requests %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Vehicle</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in service_requests %}
+                        <tr>
+                            <td>#{{ request.id }}</td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <span class="vehicle-icon">
+                                        {% if request.vehicle.type == 'car' %}
+                                            <i class="fas fa-car"></i>
+                                        {% else %}
+                                            <i class="fas fa-motorcycle"></i>
+                                        {% endif %}
+                                    </span>
+                                    {{ request.vehicle.make }} {{ request.vehicle.model }} ({{ request.vehicle.license_plate }})
+                                </div>
+                            </td>
+                            <td>{{ request.service_type.name }}</td>
+                            <td>{{ request.requested_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ request.status }}">
+                                    {% if request.status == 'pending' %}
+                                        <i class="fas fa-clock"></i>
+                                    {% elif request.status == 'accepted' %}
+                                        <i class="fas fa-check-circle"></i>
+                                    {% elif request.status == 'rejected' %}
+                                        <i class="fas fa-times-circle"></i>
+                                    {% elif request.status == 'in_progress' %}
+                                        <i class="fas fa-tools"></i>
+                                    {% elif request.status == 'completed' %}
+                                        <i class="fas fa-flag-checkered"></i>
+                                    {% endif %}
+                                    {{ request.status|title }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-calendar-times"></i>
+            </div>
+            <p>You have no service requests yet.</p>
+            <a href="{{ url_for('user.book_service') }}" class="btn btn-primary">Book Your First Service</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+    
+    .dashboard-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-welcome {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        margin-top: 0;
+    }
+    
+    .dashboard-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .action-card {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem;
+        background-color: var(--bg-white);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        text-decoration: none;
+        color: var(--text-dark);
+        transition: all 0.3s ease;
+    }
+    
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+    
+    .action-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .action-content h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+    }
+    
+    .action-content p {
+        margin: 0;
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .vehicle-info {
+        display: flex;
+        align-items: center;
+    }
+    
+    .vehicle-icon {
+        margin-right: 8px;
+        color: var(--primary-color);
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .status-badge i {
+        margin-right: 5px;
+    }
+    
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    .status-accepted {
+        background-color: #e0f2fe;
+        color: #075985;
+    }
+    
+    .status-rejected {
+        background-color: #fee2e2;
+        color: #b91c1c;
+    }
+    
+    .status-in_progress {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-completed {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1 class="welcome-heading">Vehicle Service Booking System</h1>
+    <p class="welcome-text">Schedule your car or bike service appointments with ease. We provide professional service maintenance for all types of vehicles.</p>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Our Services</h2>
+    <p>We offer comprehensive maintenance and repair services for cars and bikes with certified mechanics. Book your service appointment online in just a few steps.</p>
+    
+    <div style="margin-top: 30px;">
+        <h3>Key Features</h3>
+        <ul class="features-list">
+            <li>Create an account and book a car or bike service</li>
+            <li>Select service type and provide vehicle details</li>
+            <li>Mechanics can view incoming service requests and accept or reject them</li>
+            <li>Mechanics can update the service status to show progress or completion</li>
+        </ul>
+    </div>
+    
+    {% if not current_user.is_authenticated %}
+    <div class="action-buttons">
+        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Login</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-success">Register</a>
+    </div>
+    {% else %}
+    <div class="action-buttons">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="stat-value">Fast</div>
+        <div class="stat-label">Service Booking</div>
+        <p>Book your appointment in less than 2 minutes</p>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">Professional</div>
+        <div class="stat-label">Mechanics</div>
+        <p>Our team consists of certified experts</p>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">Transparent</div>
+        <div class="stat-label">Service Tracking</div>
+        <p>Follow the progress of your service request</p>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="container footer-content">
+        <div class="footer-text">© 2025 Vehicle Service Booking System</div>
+    </div>
+</div>
+{% endblock %} 

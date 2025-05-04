@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}My Service Requests - Vehicle Service Booking System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-title">My Service Requests</h1>
+    
+    {% if service_requests %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vehicle</th>
+                    <th>Service Type</th>
+                    <th>Requested Date</th>
+                    <th>Status</th>
+                    <th>Mechanic</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in service_requests %}
+                    <tr>
+                        <td>{{ request.id }}</td>
+                        <td>{{ request.vehicle.make }} {{ request.vehicle.model }} ({{ request.vehicle.license_plate }})</td>
+                        <td>{{ request.service_type.name }}</td>
+                        <td>{{ request.requested_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ request.status }}</td>
+                        <td>
+                            {% if request.status == 'completed' %}
+                                <form method="POST" action="{{ url_for('user.delete_request', request_id=request.id) }}" style="display:inline;" onsubmit="return confirm('Delete this completed request?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            {% elif request.mechanic_id %}
+                                {{ request.mechanic.username }}
+                            {% else %}
+                                Not assigned
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no service requests yet.</p>
+    {% endif %}
+    
+    <div style="margin-top: 20px;">
+        <a href="{{ url_for('user.book_service') }}" class="btn btn-primary">Book New Service</a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Mechanic Dashboard - Vehicle Service Booking System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-title">Mechanic Dashboard</h1>
+    <p>Welcome, {{ current_user.username }}!</p>
+    
+    <div style="margin-top: 30px;">
+        <h2>Pending Service Requests</h2>
+        {% if pending_requests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Service Type</th>
+                        <th>Requested Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in pending_requests %}
+                        <tr>
+                            <td>{{ request.id }}</td>
+                            <td>{{ request.customer.username }}</td>
+                            <td>{{ request.vehicle.make }} {{ request.vehicle.model }} ({{ request.vehicle.license_plate }})</td>
+                            <td>{{ request.service_type.name }}</td>
+                            <td>{{ request.requested_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('mechanic.accept_request', request_id=request.id) }}" class="btn btn-success">Accept</a>
+                                <a href="{{ url_for('mechanic.reject_request', request_id=request.id) }}" class="btn btn-danger">Reject</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>There are no pending service requests.</p>
+        {% endif %}
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h2>Your Assigned Requests</h2>
+        {% if mechanic_requests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Service Type</th>
+                        <th>Requested Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in mechanic_requests %}
+                        <tr>
+                            <td>{{ request.id }}</td>
+                            <td>{{ request.customer.username }}</td>
+                            <td>{{ request.vehicle.make }} {{ request.vehicle.model }} ({{ request.vehicle.license_plate }})</td>
+                            <td>{{ request.service_type.name }}</td>
+                            <td>{{ request.requested_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ request.status }}</td>
+                            <td>
+                                {% if request.status == 'accepted' %}
+                                    <form method="POST" action="{{ url_for('mechanic.update_status', request_id=request.id) }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="in_progress">
+                                        <button type="submit" class="btn btn-primary">Start Work</button>
+                                    </form>
+                                {% elif request.status == 'in_progress' %}
+                                    <form method="POST" action="{{ url_for('mechanic.update_status', request_id=request.id) }}" style="display: inline;">
+                                        <input type="hidden" name="status" value="completed">
+                                        <button type="submit" class="btn btn-success">Complete</button>
+                                    </form>
+                                {% elif request.status == 'completed' %}
+                                    <form method="POST" action="{{ url_for('mechanic.delete_request', request_id=request.id) }}" style="display: inline;" onsubmit="return confirm('Delete this completed request?');">
+                                        <button type="submit" class="btn btn-danger">✕</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>You have no assigned service requests.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

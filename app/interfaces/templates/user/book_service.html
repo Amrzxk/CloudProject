@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Book Service - Vehicle Service Booking System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 class="card-title">Book a Vehicle Service</h1>
+    
+    <form method="POST" action="{{ url_for('user.book_service') }}">
+        <h2>Vehicle Information</h2>
+        <div class="form-group">
+            <label for="vehicle_type">Vehicle Type</label>
+            <select class="form-control" id="vehicle_type" name="vehicle_type" required>
+                <option value="car">Car</option>
+                <option value="bike">Bike</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="make">Make (Brand)</label>
+            <input type="text" class="form-control" id="make" name="make" placeholder="e.g. Toyota" required>
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" class="form-control" id="model" name="model" placeholder="e.g. Corolla" required>
+        </div>
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" class="form-control" id="year" name="year" placeholder="e.g. 2022" min="1900" max="2099" required>
+        </div>
+        <div class="form-group">
+            <label for="license_plate">License Plate</label>
+            <input type="text" class="form-control" id="license_plate" name="license_plate" placeholder="e.g. ABC-1234" required>
+        </div>
+        
+        <h2>Service Information</h2>
+        <div class="form-group">
+            <label for="service_type_id">Service Type</label>
+            <select class="form-control" id="service_type_id" name="service_type_id" required>
+                {% for service_type in service_types %}
+                    <option value="{{ service_type.id }}">{{ service_type.name }} - {{ service_type.description }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="requested_date">Requested Date</label>
+            <input type="date" class="form-control" id="requested_date" name="requested_date" required>
+        </div>
+        <div class="form-group">
+            <label for="notes">Additional Notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Book Service</button>
+    </form>
+</div>
+{% endblock %} 
