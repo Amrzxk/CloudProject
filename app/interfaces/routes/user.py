@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import login_required, current_user
-from app.domain.models.models import ServiceRequest, Vehicle, ServiceType
+from app.infrastructure.persistence.models.db_models import ServiceRequest, Vehicle, ServiceType
 from app.application.services.service_request_service import ServiceRequestService
 from datetime import datetime
 
@@ -78,7 +78,7 @@ def delete_request(request_id):
     # Delete only if belongs to user and status completed
     request_obj = ServiceRequestService.delete_request(request_id)  # using service delete_request
     # Actually, fetch and check status
-    from app.domain.models.models import ServiceRequest
+    from app.infrastructure.persistence.models.db_models import ServiceRequest
     req_obj = ServiceRequest.query.get(request_id)
     if not req_obj or req_obj.user_id != current_user.id:
         flash('Service request not found or unauthorized', 'danger')

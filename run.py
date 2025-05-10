@@ -1,5 +1,5 @@
 from app import create_app, db
-from app.domain.models.models import User, ServiceType
+from app.infrastructure.persistence.models.db_models import User, ServiceType
 from werkzeug.security import generate_password_hash
 
 app = create_app()

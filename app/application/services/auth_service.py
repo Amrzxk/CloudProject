@@ -1,5 +1,5 @@
+from app.infrastructure.persistence.models.db_models import User
 from app import db
-from app.domain.models.models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, current_user
 

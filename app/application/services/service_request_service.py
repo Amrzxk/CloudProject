@@ -1,5 +1,5 @@
+from app.infrastructure.persistence.models.db_models import ServiceRequest, Vehicle, ServiceType
 from app import db
-from app.domain.models.models import ServiceRequest, Vehicle, ServiceType
 from datetime import datetime
 from flask_login import current_user
 
